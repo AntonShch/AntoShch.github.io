@@ -44,12 +44,18 @@
         /* Центровка кнопки */
         .controls {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             margin-top: 15px;
         }
 
+        .controls > *:not:last-child {
+            margin-bottom: 6px;
+        }
+
         /* Стиль кнопки */
         #takePhotoButton, #goLink {
+            text-decoration: none;
             padding: 10px 20px;
             font-size: 16px;
             border: none;
@@ -97,7 +103,7 @@
 <!-- Контейнер для кнопки -->
 <div class="controls">
     <button id="takePhotoButton">Сделать фото</button>
-    <a id="goLink" href="https://chatgpt.com/share/67326d6f-eaa0-8005-90e0-78ff32f91b4a" target="_blank">">
+    <a id="goLink" href="https://chatgpt.com/share/67326d6f-eaa0-8005-90e0-78ff32f91b4a" target="_blank">
         Перейти на chatgpt, который это сделал
     </a>
 </div>
