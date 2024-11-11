@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фото с камеры</title>
+</head>
+<body>
+<h1>Фото с камеры</h1>
+<video id="camera" autoplay playsinline style="display: none;"></video>
+<button id="takePhotoButton">Сделать фото</button>
+<canvas id="canvas" style="display: none;"></canvas>
+<img id="photoImage" alt="Фото" />
+
+<script>
+  let videoStream;
+
+  async function startCamera() {
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.getElementById("camera");
+      video.srcObject = videoStream;
+    } catch (error) {
+      console.error("Ошибка при доступе к камере:", error);
+    }
+  }
+
+  function takePhoto() {
+    const video = document.getElementById("camera");
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext("2d");
+
+    // Устанавливаем размер canvas как у видео
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Рисуем текущий кадр с видео на canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Преобразуем содержимое canvas в изображение (data URL)
+    const photoDataUrl = canvas.toDataURL("image/png");
+
+    // Устанавливаем data URL как источник изображения
+    const photoImage = document.getElementById("photoImage");
+    photoImage.src = photoDataUrl;
+
+    // Передаем изображение в JavaScript для дальнейшей обработки
+    console.log("Фото сделано: ", photoDataUrl); // Это data URL, которое можно использовать для отправки на сервер
+  }
+
+  document.getElementById("takePhotoButton").addEventListener("click", takePhoto);
+
+  startCamera();
+</script>
+</body>
+</html>
