@@ -4,22 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фото с камеры</title>
+    <style>
+        /* Основной контейнер для видео и снимка */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Стиль для видеопотока (реального времени) */
+        #camera {
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+
+        /* Стиль для сохраненного фото */
+        #photoImage {
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+
+        /* Центровка кнопки */
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        /* Стиль кнопки */
+        #takePhotoButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Цвет кнопки при наведении */
+        #takePhotoButton:hover {
+            background-color: #0056b3;
+        }
+
+        /* Адаптивный дизайн для мобильных устройств */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #camera, #photoImage {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Фото с камеры</h1>
-<a href="https://chatgpt.com/share/67326d6f-eaa0-8005-90e0-78ff32f91b4a" target="_blank">Ссылка на источник chatgpt</a>
+<h1 style="text-align: center;">Фото с камеры</h1>
 
-<!-- Видеопоток с камеры для предварительного просмотра -->
-<video id="camera" autoplay playsinline></video>
+<!-- Контейнер для отображения видеопотока и фото -->
+<div class="container">
+    <!-- Видеопоток с камеры для предварительного просмотра -->
+    <video id="camera" autoplay playsinline></video>
 
-<!-- Кнопка для снятия фото -->
-<button id="takePhotoButton">Сделать фото</button>
+    <!-- Сохраненное фото -->
+    <img id="photoImage" alt="Фото" />
+</div>
 
-<!-- Canvas для обработки снимка -->
+<!-- Контейнер для кнопки -->
+<div class="controls">
+    <button id="takePhotoButton">Сделать фото</button>
+</div>
+
 <canvas id="canvas" style="display: none;"></canvas>
-
-<!-- Место для вывода сделанного снимка -->
-<img id="photoImage" alt="Фото" />
 
 <script>
   let videoStream;
