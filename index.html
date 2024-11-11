@@ -7,9 +7,17 @@
 </head>
 <body>
 <h1>Фото с камеры</h1>
-<video id="camera" autoplay playsinline style="display: none;"></video>
+
+<!-- Видеопоток с камеры для предварительного просмотра -->
+<video id="camera" autoplay playsinline></video>
+
+<!-- Кнопка для снятия фото -->
 <button id="takePhotoButton">Сделать фото</button>
+
+<!-- Canvas для обработки снимка -->
 <canvas id="canvas" style="display: none;"></canvas>
+
+<!-- Место для вывода сделанного снимка -->
 <img id="photoImage" alt="Фото" />
 
 <script>
@@ -17,7 +25,12 @@
 
   async function startCamera() {
     try {
-      videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      // Запрос к задней камере
+      videoStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: "environment" } }
+      });
+
+      // Отображение видеопотока на экране
       const video = document.getElementById("camera");
       video.srcObject = videoStream;
     } catch (error) {
@@ -30,7 +43,7 @@
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
 
-    // Устанавливаем размер canvas как у видео
+    // Устанавливаем размеры canvas как у видео
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
@@ -40,7 +53,7 @@
     // Преобразуем содержимое canvas в изображение (data URL)
     const photoDataUrl = canvas.toDataURL("image/png");
 
-    // Устанавливаем data URL как источник изображения
+    // Устанавливаем data URL как источник изображения для сохранённого снимка
     const photoImage = document.getElementById("photoImage");
     photoImage.src = photoDataUrl;
 
