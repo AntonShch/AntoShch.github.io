@@ -19,6 +19,7 @@
         #camera {
             width: 100%;
             max-width: 400px;
+            height: auto;
             border: 2px solid #333;
             border-radius: 8px;
         }
@@ -27,8 +28,17 @@
         #photoImage {
             width: 100%;
             max-width: 400px;
+            height: auto;
             border: 2px solid #333;
             border-radius: 8px;
+        }
+
+        /* Контейнер для метаинформации */
+        .metadata {
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            margin-top: 10px;
         }
 
         /* Центровка кнопки */
@@ -39,7 +49,7 @@
         }
 
         /* Стиль кнопки */
-        #takePhotoButton {
+        #takePhotoButton, #goLink {
             padding: 10px 20px;
             font-size: 16px;
             border: none;
@@ -51,7 +61,7 @@
         }
 
         /* Цвет кнопки при наведении */
-        #takePhotoButton:hover {
+        #takePhotoButton:hover, #goLink:hover {
             background-color: #0056b3;
         }
 
@@ -64,6 +74,7 @@
 
             #camera, #photoImage {
                 max-width: 100%;
+                height: 200px; /* Уменьшенная высота для мобильных устройств */
             }
         }
     </style>
@@ -80,9 +91,15 @@
     <img id="photoImage" alt="Фото" />
 </div>
 
+<!-- Контейнер для отображения метаинформации -->
+<div class="metadata" id="metadata"></div>
+
 <!-- Контейнер для кнопки -->
 <div class="controls">
     <button id="takePhotoButton">Сделать фото</button>
+    <a id="goLink" href="https://chatgpt.com/share/67326d6f-eaa0-8005-90e0-78ff32f91b4a" target="_blank">">
+        Перейти на chatgpt, который это сделал
+    </a>
 </div>
 
 <canvas id="canvas" style="display: none;"></canvas>
@@ -124,8 +141,16 @@
     const photoImage = document.getElementById("photoImage");
     photoImage.src = photoDataUrl;
 
-    // Передаем изображение в JavaScript для дальнейшей обработки
-    console.log("Фото сделано: ", photoDataUrl); // Это data URL, которое можно использовать для отправки на сервер
+    // Создаём и выводим метаинформацию
+    const imageSize = `${canvas.width} x ${canvas.height}`;
+    const format = "PNG";
+    const timestamp = new Date().toLocaleString();
+    const metadata = document.getElementById("metadata");
+    metadata.innerHTML = `
+        <p>Размер изображения: ${imageSize}</p>
+        <p>Формат: ${format}</p>
+        <p>Дата и время: ${timestamp}</p>
+      `;
   }
 
   document.getElementById("takePhotoButton").addEventListener("click", takePhoto);
