@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pull to Refresh Demo</title>
+    <style>
+        /* Основные стили страницы */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Контейнер с прокруткой */
+        .scroll-container {
+            overflow-y: auto;
+            height: 100vh;
+            position: relative;
+            transform: translateY(-64px); /* Начальное смещение */
+            transition: transform 0.3s ease; /* Плавный переход */
+        }
+
+        /* Текстовое уведомление о pull-to-refresh */
+        .refresh-message {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        /* Основной контент */
+        .content {
+            padding: 16px;
+            font-size: 18px;
+            line-height: 1.5;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<!-- Уведомление о pull-to-refresh -->
+<div class="refresh-message" id="refreshMessage">Обновляю...</div>
+
+<!-- Контейнер с прокруткой -->
+<div class="scroll-container" id="scrollContainer">
+    <!-- Основной контент -->
+    <div class="content">
+        <h1>Добро пожаловать!</h1>
+        <p>Потяните вниз, чтобы обновить страницу.</p>
+        <p>Здесь может быть ваш контент...</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac nulla euismod, hendrerit ligula id, luctus leo. Integer pulvinar...</p>
+        <p>Дополнительный текст для демонстрации прокрутки.</p>
+    </div>
+</div>
+
+<script>
+  const container = document.getElementById('scrollContainer') || document.documentElement; // Контейнер или документ
+  let virtualScrollTop = -64;
+  const refreshThreshold = -64; // Порог для pull-to-refresh
+  const refreshMessage = document.getElementById('refreshMessage'); // Уведомление об обновлении
+
+  // Функция обновления виртуального скролла
+  function updateScroll() {
+    if (container === document.documentElement) {
+      window.scrollTo(0, -virtualScrollTop); // Скроллим окно
+    } else {
+      container.style.transform = `translateY(${virtualScrollTop}px)`; // Скроллим контейнер
+    }
+  }
+
+  // Функция отображения уведомления и обновления страницы
+  function refreshPage() {
+    if (virtualScrollTop <= refreshThreshold) {
+      refreshMessage.style.opacity = 1; // Показываем сообщение
+      setTimeout(() => {
+        location.reload(); // Обновляем страницу
+      }, 1000); // Таймаут для эффекта
+    }
+  }
+
+  // Обработчик прокрутки для мыши
+  container.addEventListener('wheel', (event) => {
+    if (event.deltaY < 0 && virtualScrollTop < 0) {
+      virtualScrollTop = Math.min(virtualScrollTop + 10, 0); // Скроллим вверх
+    } else if (event.deltaY > 0) {
+      virtualScrollTop -= 10; // Скроллим вниз
+    }
+    updateScroll();
+    refreshPage();
+  });
+
+  // Обработчики для сенсорных экранов (touchmove)
+  let startY = 0;
+
+  container.addEventListener('touchstart', (event) => {
+    startY = event.touches[0].clientY;
+  });
+
+  container.addEventListener('touchmove', (event) => {
+    const touchY = event.touches[0].clientY;
+    const deltaY = startY - touchY;
+
+    if (deltaY > 0) {
+      // Скроллим вниз
+      virtualScrollTop -= deltaY;
+    } else if (deltaY < 0 && virtualScrollTop < 0) {
+      // Скроллим вверх
+      virtualScrollTop = Math.min(virtualScrollTop - deltaY, 0);
+    }
+    updateScroll();
+    refreshPage();
+    startY = touchY;
+  });
+
+  // Скрыть уведомление через некоторое время
+  container.addEventListener('scroll', () => {
+    setTimeout(() => {
+      refreshMessage.style.opacity = 0;
+    }, 2000);
+  });
+</script>
+</body>
+</html>
